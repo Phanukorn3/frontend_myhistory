@@ -144,6 +144,21 @@
                 />
             </div>
 
+            <div>
+                <label
+                    for="thumbnail"
+                    class="block text-sm font-medium text-gray-700"
+                    >อัพโหลดหน้าปก</label
+                >
+                <input
+                    id="thumbnail"
+                    ref="thumbnailInput"
+                    type="file"
+                    accept="image/*"
+                    @change="handleThumbnailChange"
+                    class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+                />
+            </div>
             <div class="flex justify-end gap-3 pt-4">
                 <button
                     type="button"
@@ -168,6 +183,7 @@ import { reactive, ref } from "vue";
 import axios from "axios";
 
 const fileInput = ref(null);
+const thumbnailInput = ref(null);
 
 const emit = defineEmits(["uploaded", "close"]);
 
@@ -181,6 +197,7 @@ const getInitialState = () => ({
     score: "",
     notes: "",
     clip: null,
+    thumbnail: null,
 });
 
 const form = reactive(getInitialState());
@@ -191,6 +208,15 @@ function handleFileChange(event) {
         form.clip = file;
     } else {
         form.clip = null;
+    }
+}
+
+function handleThumbnailChange(event) {
+    const file = event.target.files[0];
+    if (file) {
+        form.thumbnail = file;
+    } else {
+        form.thumbnail = null;
     }
 }
 
@@ -208,6 +234,10 @@ async function handleSubmit() {
 
     if (form.clip) {
         formData.append("clip", form.clip, form.clip.name);
+    }
+
+    if (form.thumbnail) {
+        formData.append("thumbnail", form.thumbnail, form.thumbnail.name);
     }
 
     try {
@@ -238,6 +268,10 @@ function resetForm() {
 
     if (fileInput.value) {
         fileInput.value.value = "";
+    }
+
+    if (thumbnailInput.value) {
+        thumbnailInput.value.value = "";
     }
 }
 </script>
